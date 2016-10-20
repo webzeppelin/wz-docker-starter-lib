@@ -6,14 +6,14 @@ services:
     build: ./reverse-proxy/reverse-proxy-httpd/
     image: reverse-proxy:httpd
     container_name: reverse-proxy-httpd
-    depends_on:
-     - idp
-     - public-client
-     - public-server
-    links:
-     - idp
-     - public-client
-     - public-server
+#    depends_on:
+#     - idp
+#     - public-client
+#     - public-server
+#    links:
+#     - idp
+#     - public-client
+#     - public-server
     networks:
      - front
      - back
