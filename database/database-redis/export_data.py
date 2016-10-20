@@ -30,26 +30,29 @@ def extract(options):
     src_r = redis.StrictRedis(host=options.redis_source_url, port=options.redis_source_port)
     all_keys = src_r.keys('*')
     for key in all_keys:
+        key_str = key.decode("utf-8")
         arr = []
         key_type = src_r.type(key)
-        if key_type == 'hash':
+        if key_type == b'hash':
             arr.append('HMSET')
-            arr.append(key)
+            arr.append(key_str)
             for k, v in src_r.hgetall(key).items():
-                arr.append(k)
-                arr.append(v)
-        elif key_type == 'string':
+                arr.append(k.decode("utf-8"))
+                arr.append(v.decode("utf-8"))
+        elif key_type == b'string':
             arr.append('SET')
-            arr.append(key)
-            arr.append(src_r.get(key))
-        elif key_type == 'set':
+            arr.append(key_str)
+            arr.append(src_r.get(key).decode("utf-8"))
+        elif key_type == b'set':
             arr.append('SADD')
-            arr.append(key)
-            arr.extend(list(src_r.smembers(key)))
-        elif key_type == 'list':
+            arr.append(key_str)
+            for setkey in list(src_r.smembers(key)):
+                arr.append(setkey.decode("utf-8"))
+        elif key_type == b'list':
             arr.append('LPUSH')
-            arr.append(key)
-            arr.extend(src_r.lrange(key, 0, -1))
+            arr.append(key_str)
+            for listkey in src_r.lrange(key, 0, -1):
+                arr.append(listkey.decode("utf-8"))
         else:
             # TODO
             # we probably need to add support for SortedSets here at some point...
