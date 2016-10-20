@@ -1,0 +1,81 @@
+version: "2"
+
+services:
+  #This handles all of the http request to simple cert issues and both the SP and IdP can share the same ports.
+  reverse-proxy:
+    build: ./reverse-proxy/reverse-proxy-httpd/
+    image: reverse-proxy:httpd
+    container_name: reverse-proxy-httpd
+    depends_on:
+     - idp
+     - public-client
+     - public-server
+    links:
+     - idp
+     - public-client
+     - public-server
+    networks:
+     - front
+     - back
+    ports:
+     - "80:80"
+     - "443:443"
+
+  public-client:
+    build: ./public-client/public-client-angular2/
+    image: public-client:angular2
+    container_name: public-client-angular2
+    depends_on:
+      - public-server
+    links:
+      - reverse-proxy:wzstarter
+    networks:
+      - back
+
+  public-server:
+    build: ./public-server/public-server-python3/
+    image: public-server:python3
+    container_name: public-server-python3
+    links:
+      - database
+    depends_on:
+      - database
+    networks:
+      - back
+
+  idp:
+    build: ./idp/idp-shibboleth/
+    image: idp:shibboleth
+    container_name: idp-shibboleth
+    depends_on: 
+     - ldap
+    environment:
+     - JETTY_MAX_HEAP=64m
+     - JETTY_BROWSER_SSL_KEYSTORE_PASSWORD=password
+     - JETTY_BACKCHANNEL_SSL_KEYSTORE_PASSWORD=password
+    expose: 
+     - "4443"
+    networks:
+     - back
+   
+  ldap:
+    build: ./idp/ldap-389ds/
+    image: ldap:389ds
+    container_name: ldap-389ds
+    networks:
+     - back
+
+  database:
+    build: ./database/database-redis/
+    image: database:redis
+    container_name: database-redis
+    networks:
+      - back
+    ports:
+      - "6379:6379"
+
+networks:
+  front:
+    driver: bridge
+  back:    
+    driver: bridge

@@ -1,0 +1,30 @@
+dn: cn=admin,dc=wzstarter
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+cn: admin
+userPassword: password
+description: LDAP administrator
+
+dn: uid=user1,ou=People,dc=wzstarter
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+objectClass: inetOrgPerson
+givenName: User
+uid: user1
+sn: One
+cn: User One
+mail: user1@wzstarter.com
+userPassword: password
+
+dn: uid=staff1,ou=People,dc=wzstarter
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+objectClass: inetOrgPerson
+givenName: Staff
+uid: staff1
+sn: One
+cn: Staff One
+mail: staff1@wzstarter.com
+userPassword: password
