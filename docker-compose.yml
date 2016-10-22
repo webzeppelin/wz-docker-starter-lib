@@ -42,6 +42,8 @@ services:
       - database
     networks:
       - back
+#    ports:
+#      - "8081:8081"
 
   idp:
     build: ./idp/idp-shibboleth/
