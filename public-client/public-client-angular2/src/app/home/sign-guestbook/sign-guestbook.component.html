@@ -1,0 +1,42 @@
+<div class="well">
+    <div *ngIf="!state_submitted">
+        <h2>Sign Our Guestbook!</h2>
+        <form (ngSubmit)="onSubmit()" #signGuestbookForm="ngForm">
+          <div class="form-group">
+            <label for="name">Your Name:</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name." required [(ngModel)]="model.name" #name="ngModel">
+            <div [hidden]="name.valid || name.pristine" class="alert alert-danger">Name is required</div>
+          </div>
+          <div class="form-group">
+            <label for="message">Your Guestbook Message:</label>
+            <textarea class="form-control" id="message" name="message" rows="10" placeholder="Enter your guestbook message." required [(ngModel)]="model.message" #message="ngModel"></textarea>
+            <div [hidden]="message.valid || message.pristine" class="alert alert-danger">Message is required</div>
+          </div>
+          <button type="submit" class="btn btn-default" [disabled]="!signGuestbookForm.form.valid">Submit Message to Guestbook</button>
+        </form>
+    </div>
+    <div *ngIf="state_submitted && !state_completed">
+        <p>Working...</p>
+    </div>
+    <div *ngIf="state_submitted && state_completed">
+        <h2>Thanks for writing in our guestbook!</h2>
+        <p>This is what you posted...</p>
+        <form>
+            <div class="form-group">
+                <label for="ro_name">Name:</label>
+                <p class="form-control-static" id="ro_name">{{ model.name }}</p>
+            </div>
+            <div class="form-group">
+                <label for="ro_message">Message:</label>
+                <p class="form-control-static" id="ro_message">{{ model.message }}</p>
+            </div>
+        </form>
+        <div class='wrapper text-center'>
+            <div class="btn-group" role="group" aria-label="...">
+                <button type="button" class="btn btn-default" (click)="signAgainButtonClick()">Sign Guestbook Again</button>
+                <button type="button" class="btn btn-default" (click)="browseButtonClick()">Browse Guestbook</button>
+            </div>
+        </div>
+    </div>
+    <p><!--{{diagnostic}}--></p>
+</div>

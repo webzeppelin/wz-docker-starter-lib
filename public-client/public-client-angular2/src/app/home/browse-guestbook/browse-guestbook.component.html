@@ -1,0 +1,19 @@
+<div class="well">
+    <h2>Browse our Guestbook</h2>
+    <div *ngIf="!state_loaded">
+        <p>Loading the guestbook...</p>
+    </div>
+    <div *ngIf="state_loaded">
+        <div *ngFor="let entry of model" class="well entry_well">
+            <p><span class="entry_name">{{ entry.name }}</span> <span class="entry_timestamp">{{ entry.timestamp.toLocaleString() }}</span><br/><!-- .toLocaleDateString() -->
+                <span class="entry_message">{{ entry.message }}</span></p>
+        </div>
+    </div>
+    <div *ngIf="state_loading_more">
+        <p>Loading more guestbook entries...</p>
+    </div>
+    <form *ngIf="!state_loading_more && state_has_more">
+        <button type="button" class="btn btn-default" (click)="loadMore()">Load More</button>
+    </form>
+    <!--<p><br/><br/>{{diagnostic}}</p>-->
+</div>

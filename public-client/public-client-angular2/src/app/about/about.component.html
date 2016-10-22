@@ -1,0 +1,20 @@
+<h1>About Page</h1>
+<p>This application is used as a starter project and uses the following stack:</p>
+<div class="row">
+  <div class="col-sm-12">
+      <carousel id="myCarousel" [interval]="5000">
+          <!-- Indicators -->
+          <!-- Wrapper for slides -->
+
+            <slide *ngFor="let stackItem of stackItems">
+              <img src="{{ stackItem.image }}" alt="Angular">
+              <div class="carousel-caption">
+                <h3>{{ stackItem.title }}</h3>
+                <p>{{ stackItem.description }}</p>
+              </div>
+            </slide>
+
+
+    </carousel>
+  </div>
+</div>

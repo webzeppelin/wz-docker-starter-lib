@@ -1,0 +1,11 @@
+<div *ngIf="server_time" class="card">
+    <div class="panel panel-default">
+      <div class="panel-heading">Server Time</div>
+      <div class="panel-body">
+          {{ formatted_time }}
+          <br/>
+          {{server_time.tz_name}} ({{server_time.tz_offset}})
+      </div>
+
+    </div>
+</div>

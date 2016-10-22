@@ -1,0 +1,22 @@
+<h1>Home Page</h1>
+<div class="row">
+  <div class="col-sm-3">
+      <div class="btn-group-vertical" role="group" aria-label="...">
+          <button type="button" (click)="clickSign()" class="btn btn-default">Sign Guestbook</button>
+          <button type="button" (click)="clickBrowse()" class="btn btn-default">Browse Guestbook</button>
+          <button type="button" (click)="clickSearch()" class="btn btn-default">Search Guestbook</button>
+      </div>
+  </div>
+  <div class="col-sm-7">
+      <div *ngIf="active_view === 'sign'" class="wrapper">
+          <sign-guestbook></sign-guestbook>
+      </div>
+      <div *ngIf="active_view === 'browse'" class="wrapper">
+          <browse-guestbook></browse-guestbook>
+      </div>
+      <div *ngIf="active_view === 'search'" class="wrapper">
+          <search-guestbook></search-guestbook>
+      </div>
+  </div>
+  <div class="col-sm-2"><clock></clock></div>
+</div>
