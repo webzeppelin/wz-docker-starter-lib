@@ -7,7 +7,7 @@ RUN apk --no-cache add \
     musl-dev \
   && python3 -m pip install -r /workdir/requirements.txt \
   && adduser -D app \
-  && mkdir -p /workdir  \
+  && mkdir -p /workdir \
   && chown -R app:app /workdir
 
 COPY flask_app /workdir/flask_app/

@@ -1,6 +1,7 @@
 """This module has configurations for flask app."""
 
 import os
+import sys
 import logging
 from logging import handlers
 from flask import Flask
@@ -11,7 +12,7 @@ app = Flask(__name__)
 
 HOSTNAME = '0.0.0.0'
 PORT = 8081
-REDIS_HOST = 'redis'
+REDIS_HOST = 'database'
 REDIS_PORT = 6379
 
 CONFIG = {
@@ -30,7 +31,7 @@ class BaseConfig(object):
     LOGGING_FORMAT = "[%(asctime)s] [%(funcName)-30s] +\
                                     [%(levelname)-6s] %(message)s"
     LOGGING_LOCATION = 'web.log'
-    LOGGING_LEVEL = logging.DEBUG
+    LOGGING_LEVEL = logging.INFO
     CACHE_TYPE = 'simple'
     COMPRESS_MIMETYPES = ['text/html', 'text/css', 'text/xml',
                           'application/json', 'application/javascript']
@@ -64,22 +65,26 @@ class TestingConfig(BaseConfig):
 
 def setup_logger():
     """Setup the logger with predefined formatting of time and rollup."""
-    generated_files = 'log_output'
-    logfile_name = '{0}/web.log'.format(generated_files)
-    if not os.path.exists(generated_files):
-        os.makedirs(generated_files)
+    # generated_files = 'log_output'
+    # logfile_name = '{0}/web.log'.format(generated_files)
+    # if not os.path.exists(generated_files):
+    #     os.makedirs(generated_files)
 
-    logging.getLogger('').setLevel(logging.DEBUG)
-    handler = logging.handlers.RotatingFileHandler(logfile_name,
-                                                   maxBytes=10000000,
-                                                   backupCount=1000)
+    logging.getLogger('').setLevel(logging.INFO)
+    # handler = logging.handlers.RotatingFileHandler(logfile_name,
+    #                                               maxBytes=10000000,
+    #                                               backupCount=1000)
+
+    handler = logging.StreamHandler(sys.stdout)
+
     LOGGING_FORMAT = "[%(asctime)s] [%(name)s.%(funcName)-30s]" +\
         "[%(levelname)-6s] %(message)s"
     datefmt = '%Y-%m-%d %H:%M:%S'
     handler.setFormatter(logging.Formatter(LOGGING_FORMAT, datefmt=datefmt))
     logging.getLogger('').addHandler(handler)
 
-    print('Logging into {}'.format(logfile_name))
+    # print('Logging into {}'.format(logfile_name))
+    print('Logging into stdout')
 
 
 def configure_app(app):
