@@ -45,21 +45,32 @@ services:
 #    ports:
 #      - "8081:8081"
 
+  # idp:
+  #   build: ./idp/idp-shibboleth/
+  #   image: idp:shibboleth
+  #   container_name: idp-shibboleth
+  #   depends_on:
+  #    - ldap
+  #   environment:
+  #    - JETTY_MAX_HEAP=64m
+  #    - JETTY_BROWSER_SSL_KEYSTORE_PASSWORD=password
+  #    - JETTY_BACKCHANNEL_SSL_KEYSTORE_PASSWORD=password
+  #   expose:
+  #    - "4443"
+  #   networks:
+  #    - back
+
   idp:
-    build: ./idp/idp-shibboleth/
-    image: idp:shibboleth
-    container_name: idp-shibboleth
-    depends_on: 
-     - ldap
-    environment:
-     - JETTY_MAX_HEAP=64m
-     - JETTY_BROWSER_SSL_KEYSTORE_PASSWORD=password
-     - JETTY_BACKCHANNEL_SSL_KEYSTORE_PASSWORD=password
-    expose: 
-     - "4443"
+    build: ./idp/idp-dex/
+    image: idp:dex
+    container_name: idp-dex
+#    depends_on:
+#     - postgress
+    expose:
+     - "5556"
     networks:
      - back
-   
+
   ldap:
     build: ./idp/ldap-389ds/
     image: ldap:389ds

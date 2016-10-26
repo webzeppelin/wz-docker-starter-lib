@@ -1,0 +1,12 @@
+[
+  {
+    "id": "APP-WZSTARTER-ORG",
+    "secret": "ZXhhbXBsZS1hcHAtc2VjcmV0",
+    "redirectURLs": ["https://app.wzstarter.org/"]
+  },
+  {
+    "id": "public",
+    "secret": "ZXhhbXBsZS1hcHAtc2VjcmV0",
+    "public": true
+  }
+]

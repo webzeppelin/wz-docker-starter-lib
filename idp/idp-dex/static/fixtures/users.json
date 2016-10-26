@@ -1,0 +1,26 @@
+[
+    {
+        "id": "user1",
+        "email": "user1@wzstarter.org",
+        "displayName": "User One",
+        "password": "password",
+        "remoteIdentities": [
+            {
+                "connectorId": "local",
+                "id": "user1"
+            }
+        ]
+    },
+    {
+          "id": "staff1",
+          "email": "staff1@wzstarter.org",
+          "displayName": "Staff One",
+          "password": "password",
+          "remoteIdentities": [
+              {
+                  "connectorId": "local",
+                  "id": "staff1"
+              }
+          ]
+      }
+]
