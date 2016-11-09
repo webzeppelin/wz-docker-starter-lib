@@ -17,6 +17,8 @@ REDIS_PORT = 6379
 OIDC_METADATA_URL = 'https://idp.wzstarter.org/dex/.well-known/openid-configuration'
 OIDC_CLIENT_ID = 'APP-WZSTARTER-ORG'
 OIDC_CLIENT_SECRET = 'ZXhhbXBsZS1hcHAtc2VjcmV0'
+OIDC_DEFAULT_SCOPE = 'openid'
+OIDC_DEFAULT_REDIRECT_URI = 'https://app.wzstarter.org/'
 
 CONFIG = {
     "development": "flask_app.config.DevelopmentConfig",
@@ -103,6 +105,7 @@ def configure_app(app):
     app.json_encoder = MyFlaskJSONEncoder
     app.redis_config = RedisConfig()
     app.oidc_config = OIDCConfig()
+    print("configure_app done")
 
 class RedisConfig(object):
     def __init__(self, host=REDIS_HOST, port=REDIS_PORT):
@@ -110,7 +113,9 @@ class RedisConfig(object):
         self.port = port
 
 class OIDCConfig(object):
-    def __init__(self, metadata_url=OIDC_METADATA_URL, client_id=OIDC_CLIENT_ID, client_secret=OIDC_CLIENT_SECRET):
+    def __init__(self, metadata_url=OIDC_METADATA_URL, client_id=OIDC_CLIENT_ID, client_secret=OIDC_CLIENT_SECRET, default_scope=OIDC_DEFAULT_SCOPE, default_redirect_uri=OIDC_DEFAULT_REDIRECT_URI):
         self.metadata_url = metadata_url
         self.client_id = client_id
         self.client_secret = client_secret
+        self.default_scope = default_scope
+        self.default_redirect_uri = default_redirect_uri

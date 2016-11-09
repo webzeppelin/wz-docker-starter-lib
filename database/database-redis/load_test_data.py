@@ -48,7 +48,7 @@ def new_guid():
     return str(uuid.uuid4())
 
 if __name__ == '__main__':
-    r = redis.StrictRedis(host='192.168.0.107', port=6379)
+    r = redis.StrictRedis(host='database', port=6379)
     for quote in quotes:
         storeGuestbookEntry(r, new_guid(), quote[1], quote[0], current_datetime())
     print("Completed data load")

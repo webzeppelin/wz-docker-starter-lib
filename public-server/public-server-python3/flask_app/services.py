@@ -2,17 +2,18 @@
 
 import logging
 import json
+import uuid
+# import time
+import redis
 from gevent.wsgi import WSGIServer
 from flask import request, Response, jsonify
 from datetime import datetime
-import uuid
-import time
 from pytz import timezone, utc
 from tzlocal import get_localzone
 from .config import configure_app, app, HOSTNAME, PORT
-from .utils import encode
+from .utils import encode, oidc
 from .models import HealthStatus, ServerTime, GuestbookEntry, GuestbookEntrySet
-import redis
+from flask_app import config
 
 GUESTBOOK_BROWSE_PAGE_SIZE = 10
 
@@ -64,7 +65,7 @@ def sign_guestbook():
     )
 
     # this is where it will get stored in redis
-    redis_key = get_redis_key(entry.id)
+    redis_key = get_guestbook_redis_key(entry.id)
     json_str = json.dumps(entry.to_dict(), cls=encode.MyJSONEncoder)
     r = get_redis()
     r.set(redis_key, json_str)
@@ -102,10 +103,99 @@ def browse_guestbook():
 
     return success_response(entry_set.to_dict())
 
+@app.route('/api/v1/login', methods=['GET'])
+def login_start():
+    client = oidc.OIDCClient(app.oidc_config)
+
+    session_id = new_guid()
+    redirect_uri = request.args.get('redirect_uri') or app.oidc_config.default_redirect_uri
+    scope = request.args.get('scope') or app.oidc_config.default_scope
+    state = oidc.OIDCClient.gen_nonce()
+
+    login_url = client.get_login_url(redirect_uri, scope, state)
+
+    # create session in redis and store state and redirect_uri for later use/validation
+    redis_key = get_login_redis_key(session_id)
+    r = get_redis()
+    r.hset(redis_key, 'state', state)
+    r.hset(redis_key, 'redirect_uri', redirect_uri)
+
+    return success_response(
+        {
+            'session_id': session_id,
+            'state': state,
+            'scope': scope,
+            'redirect_uri': redirect_uri,
+            'login_url': login_url
+        }
+    )
+
+@app.route('/api/v1/login/token', methods=['POST'])
+def login_token():
+    client = oidc.OIDCClient(app.oidc_config)
+
+    payload = request.get_json(force=True)
+    if payload is None:
+        return error_response(400, 'Missing POST body in login token request')
+
+    session_id = request.args.get('session_id') or payload.get('session_id') or request.cookies.get('wzstarter.login.session_id')
+    code = request.args.get('code') or payload.get('code')
+    state = request.args.get('state') or payload.get('state')
+
+    if not session_id:
+        return error_response(400, 'Missing session_id in login token request')
+    if not code:
+        return error_response(400, 'Missing code in login token request')
+    if not state:
+        return error_response(400, 'Missing state in login token request')
+
+    redis_key = get_login_redis_key(session_id)
+    r = get_redis()
+
+    cached_state = r.hget(redis_key, 'state')
+    if state != cached_state:
+        return error_response(400, 'Incorrect state value provided')
+
+    cached_redirect_uri = r.hget(redis_key, 'redirect_uri')
+
+    tokens = client.get_tokens(cached_redirect_uri, code)
+
+    r.delete(redis_key)
+
+    return success_response(tokens.to_dict())
+
+@app.route('/api/v1/login/info', methods=['GET'])
+def get_user_info():
+    client = oidc.OIDCClient(app.oidc_config)
+
+    access_token = get_access_token(request)
+
+    if not access_token:
+        return error_response(401, "Missing access token")
+
+    try:
+        token = client.validate_token(access_token)
+    except:
+        return error_response(401, "Invalid access token")
+
+    return success_response(
+        {
+            'name': token.get('name'),
+            'sub': token.get('sub'),
+            'email': token.get('email')
+        }
+    )
+
+def get_access_token(request):
+    access_token = request.headers.get("Authorization")
+    if access_token and access_token.startswith("Bearer "):
+        access_token = access_token[7:]
+    if not access_token:
+        access_token = request.cookies.get('wzstarter.oidc.access_token')
+    return access_token
 
 def current_datetime():
     return datetime.now(utc)
-
 
 def error_response(status_code=400, message="Bad request"):
     print('Sending error response')
@@ -125,7 +215,7 @@ def success_response(response_dict={}):
 @app.errorhandler(500)
 def internal_server_error(error):
     app.logger.error('Server Error: %s', (error))
-    return error_response(500, error.message)
+    return error_response(500, str(error))
 
 @app.errorhandler(404)
 def internal_server_error(error):
@@ -144,8 +234,11 @@ def get_redis():
     cfg = app.redis_config
     return redis.StrictRedis(host=cfg.hostname, port=cfg.port)
 
-def get_redis_key(id):
+def get_guestbook_redis_key(id):
     return 'guestbook:'+id
+
+def get_login_redis_key(id):
+    return 'login:'+id
 
 def parse_redis_key(key):
     return key.split(':')[1]
