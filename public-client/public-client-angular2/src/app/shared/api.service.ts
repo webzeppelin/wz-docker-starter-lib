@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map'
 
 import { Configuration } from '../app.config';
-import { ServerTime, GuestbookEntry, GuestbookEntrySet } from './api.model'
+import { ServerTime, GuestbookEntry, GuestbookEntrySet, LoginResponse, TokenRequest, TokenResponse, UserInfo } from './api.model'
 
 @Injectable()
 export class ApiService {
@@ -53,6 +53,26 @@ export class ApiService {
             .map((response: Response) => <GuestbookEntrySet>response.json())
             .catch(this.handleError);
     }
+
+    public startLogin = (): Observable<LoginResponse> => {
+        // call the login start api service to get the info needed to start the login process
+        return this._http.get(this.actionUrl + 'login')
+            .map((response: Response) => <LoginResponse>response.json())
+            .catch(this.handleError);
+    }
+
+    public claimTokens = (request: TokenRequest): Observable<TokenResponse> => {
+        // call the api token service to get the auth tokens
+        let bodyString = JSON.stringify(request);
+        return this._http.post(this.actionUrl + 'login/token', bodyString)
+            .map((response: Response) => <TokenResponse>response.json())
+            .catch(this.handleError);
+    }
+
+    public getUserInfo = (): Observable<UserInfo> => {
+        return null;
+    }
+
 
     private handleError(error: Response) {
         console.error(error);

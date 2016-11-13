@@ -24,8 +24,7 @@ export class ClockComponent implements OnInit {
         this.api.getServerTime()
             .subscribe(
                 st => this.setServerTime(st),
-                error => console.error('Error: ' + error),
-                () => console.log('Completed!')
+                error => console.error('Error: ' + error)
             )
     }
 

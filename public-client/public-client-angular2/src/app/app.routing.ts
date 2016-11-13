@@ -4,11 +4,11 @@ import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'sign', pathMatch: 'full' },
-  { path: 'about', component: AboutComponent },
+  { path: '', component: HomeComponent },
   { path: 'sign', component: HomeComponent },
-  { path: 'browse', component: HomeComponent},
-  { path: 'search', component: HomeComponent}
+  { path: 'browse', component: HomeComponent },
+  { path: 'search', component: HomeComponent },
+  { path: 'about', component: AboutComponent }
 ];
 
 export const routing = RouterModule.forRoot(routes);

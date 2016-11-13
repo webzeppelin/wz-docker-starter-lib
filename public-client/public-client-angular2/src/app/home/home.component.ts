@@ -11,9 +11,12 @@ export class HomeComponent implements OnInit {
     active_view: string;
 
     constructor(private router: Router, private route: ActivatedRoute) {
-        // this.active_view = "sign";
+
     }
 
+    clickWelcome(): void {
+        this.router.navigate(['/']);
+    }
     clickSign(): void {
         this.router.navigate(['/sign']);
     }
@@ -30,6 +33,8 @@ export class HomeComponent implements OnInit {
         let path_segs = this.route.snapshot.url;
         if (path_segs.length > 0) {
             this.setActiveView(path_segs[path_segs.length-1].path);
+        } else {
+            this.setActiveView('welcome');
         }
         console.log('ActiveView = '+this.active_view);
     }

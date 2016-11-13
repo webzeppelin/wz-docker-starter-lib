@@ -24,3 +24,37 @@ export class GuestbookEntrySet {
         public has_more: boolean
     ) { }
 }
+
+export class LoginResponse {
+    constructor(
+        public session_id: string,
+        public state: string,
+        public scope: string,
+        public redirect_uri: string,
+        public login_url: string
+    ) { }
+}
+
+export class TokenRequest {
+    constructor(
+        public session_id: string,
+        public state: string,
+        public code: string
+    ) { }
+}
+export class TokenResponse {
+    constructor(
+        public id_token: string,
+        public token_type: string,
+        public access_token: string,
+        public expires_in: string
+    ) { }
+}
+
+export class UserInfo {
+    constructor(
+        public name: string,
+        public sub: string,
+        public email: string
+    ) { }
+}

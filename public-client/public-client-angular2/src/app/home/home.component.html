@@ -2,12 +2,16 @@
 <div class="row">
   <div class="col-sm-3">
       <div class="btn-group-vertical" role="group" aria-label="...">
+          <button type="button" (click)="clickWelcome()" class="btn btn-default">Welcome</button>
           <button type="button" (click)="clickSign()" class="btn btn-default">Sign Guestbook</button>
           <button type="button" (click)="clickBrowse()" class="btn btn-default">Browse Guestbook</button>
           <button type="button" (click)="clickSearch()" class="btn btn-default">Search Guestbook</button>
       </div>
   </div>
   <div class="col-sm-7">
+      <div *ngIf="active_view === 'welcome'" class="wrapper">
+          <welcome></welcome>
+      </div>
       <div *ngIf="active_view === 'sign'" class="wrapper">
           <sign-guestbook></sign-guestbook>
       </div>

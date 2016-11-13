@@ -8,12 +8,15 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { ApiService } from './shared/api.service';
+import { OIDCService } from './shared/oidc.service';
 import { Configuration } from './app.config';
 
 import { ClockComponent } from './shared/clock/clock.component';
+import { LoginComponent } from './shared/login/login.component';
 import { SignGuestbookComponent } from './home/sign-guestbook/sign-guestbook.component';
 import { BrowseGuestbookComponent } from './home/browse-guestbook/browse-guestbook.component';
 import { SearchGuestbookComponent } from './home/search-guestbook/search-guestbook.component';
+import { WelcomeComponent } from './home/welcome/welcome.component';
 
 import { routing } from './app.routing';
 
@@ -33,13 +36,16 @@ import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
     HomeComponent,
     AboutComponent,
     ClockComponent,
+    LoginComponent,
+    WelcomeComponent,
     SignGuestbookComponent,
     BrowseGuestbookComponent,
     SearchGuestbookComponent
   ],
   providers: [
     ApiService,
-    Configuration
+    Configuration,
+    OIDCService
   ],
   bootstrap: [AppComponent]
 })
