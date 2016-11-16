@@ -5,10 +5,14 @@ COPY requirements.txt run.py /workdir/
 RUN apk --no-cache add \
     gcc \
     musl-dev \
-  && python3 -m pip install -r /workdir/requirements.txt \
+    build-base \
+    libffi-dev \
+    openssl-dev \
   && adduser -D app \
   && mkdir -p /workdir \
   && chown -R app:app /workdir
+
+RUN python3 -m pip install -r /workdir/requirements.txt
 
 COPY flask_app /workdir/flask_app/
 

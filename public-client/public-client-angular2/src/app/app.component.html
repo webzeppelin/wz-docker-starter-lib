@@ -17,7 +17,9 @@
 
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><login></login></li>
+          <li *ngIf="!isLoggedIn()"><a (click)="handleLoginClick()">Login</a></li>
+          <li *ngIf="isLoggedIn()"><p>Hi, {{userInfo.name}}!</p></li>
+          <li *ngIf="isLoggedIn()"><a (click)="handleLogoutClick()">Logout</a></li>
         </ul>
       </div><!--/.nav-collapse -->
     </div>

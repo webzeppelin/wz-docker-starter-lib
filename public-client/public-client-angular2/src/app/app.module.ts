@@ -12,7 +12,6 @@ import { OIDCService } from './shared/oidc.service';
 import { Configuration } from './app.config';
 
 import { ClockComponent } from './shared/clock/clock.component';
-import { LoginComponent } from './shared/login/login.component';
 import { SignGuestbookComponent } from './home/sign-guestbook/sign-guestbook.component';
 import { BrowseGuestbookComponent } from './home/browse-guestbook/browse-guestbook.component';
 import { SearchGuestbookComponent } from './home/search-guestbook/search-guestbook.component';
@@ -36,7 +35,6 @@ import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
     HomeComponent,
     AboutComponent,
     ClockComponent,
-    LoginComponent,
     WelcomeComponent,
     SignGuestbookComponent,
     BrowseGuestbookComponent,

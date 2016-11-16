@@ -42,6 +42,8 @@ services:
       - database
     networks:
       - back
+    extra_hosts:
+      - "idp.wzstarter.org:192.168.0.104"
 #    ports:
 #      - "8081:8081"
 
@@ -71,12 +73,12 @@ services:
     networks:
      - back
 
-  ldap:
-    build: ./idp/ldap-389ds/
-    image: ldap:389ds
-    container_name: ldap-389ds
-    networks:
-     - back
+#  ldap:
+#    build: ./idp/ldap-389ds/
+#    image: ldap:389ds
+#    container_name: ldap-389ds
+#    networks:
+#     - back
 
   database:
     build: ./database/database-redis/

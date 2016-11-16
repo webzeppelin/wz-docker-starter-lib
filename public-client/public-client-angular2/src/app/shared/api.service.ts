@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
+import { Cookie } from 'ng2-cookies/ng2-cookies';
 
 import 'rxjs/Rx'
 import { Observable } from 'rxjs/Observable';
@@ -27,7 +28,7 @@ export class ApiService {
 
 
     public getServerTime = (): Observable<ServerTime> => {
-        return this._http.get(this.actionUrl + 'time')
+        return this._http.get(this.actionUrl + 'time', { headers: this.headers })
             .map((response: Response) => <ServerTime>response.json())
             .catch(this.handleError);
     }
@@ -35,28 +36,28 @@ export class ApiService {
     public signGuestbook = (entry: GuestbookEntry): Observable<GuestbookEntry> => {
         // post to the API with the supplied entry
         let bodyString = JSON.stringify(entry);
-        return this._http.post(this.actionUrl + 'guestbook', bodyString)
+        return this._http.post(this.actionUrl + 'guestbook', bodyString, { headers: this.headers })
             .map((response: Response) => <GuestbookEntry>response.json())
             .catch(this.handleError);
     }
 
     public browseGuestbook = (): Observable<GuestbookEntrySet> => {
         // retrieve the most recent guestbook entries
-        return this._http.get(this.actionUrl + 'guestbook')
+        return this._http.get(this.actionUrl + 'guestbook', { headers: this.headers })
             .map((response: Response) => <GuestbookEntrySet>response.json())
             .catch(this.handleError);
     }
 
     public browseGuestbookMore = (last_id: string): Observable<GuestbookEntrySet> => {
         // retrieve the most recent guestbook entries since the id provided
-        return this._http.get(this.actionUrl + 'guestbook?last_id='+last_id)
+        return this._http.get(this.actionUrl + 'guestbook?last_id='+last_id, { headers: this.headers })
             .map((response: Response) => <GuestbookEntrySet>response.json())
             .catch(this.handleError);
     }
 
     public startLogin = (): Observable<LoginResponse> => {
         // call the login start api service to get the info needed to start the login process
-        return this._http.get(this.actionUrl + 'login')
+        return this._http.get(this.actionUrl + 'login', { headers: this.headers })
             .map((response: Response) => <LoginResponse>response.json())
             .catch(this.handleError);
     }
@@ -64,13 +65,19 @@ export class ApiService {
     public claimTokens = (request: TokenRequest): Observable<TokenResponse> => {
         // call the api token service to get the auth tokens
         let bodyString = JSON.stringify(request);
-        return this._http.post(this.actionUrl + 'login/token', bodyString)
+        return this._http.post(this.actionUrl + 'login/token', bodyString, { headers: this.headers })
             .map((response: Response) => <TokenResponse>response.json())
             .catch(this.handleError);
     }
 
     public getUserInfo = (): Observable<UserInfo> => {
-        return null;
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Accept', 'application/json');
+        headers.append('Authorization', Cookie.get('wzstarter.oidc.id_token'));
+        return this._http.get(this.actionUrl + 'login/info', {headers: headers})
+            .map((response: Response) => <UserInfo>response.json())
+            .catch(this.handleError);
     }
 
 

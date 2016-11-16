@@ -35,7 +35,19 @@ export class AboutComponent implements OnInit {
             new StackItem(
                 "Flask",
                 "Flask is used to implement server-side APIs and any server-side web applications.",
-                "/img/flask.png")
+                "/img/flask.png"),
+            new StackItem(
+                "Redis",
+                "Redis is used for fast, scalable data persistence and session management.",
+                "/img/redis.png"),
+            new StackItem(
+                "CoreOS Dex",
+                "Dex is a lightweight, standards-compliant OpenId Connect / OAuth 2 identity provider written in Go lang.",
+                "/img/dex.jpg"),
+            new StackItem(
+                "Alpine Linux + Docker",
+                "Docker is used to containerize all solution components as containers running the ultrasmall and fast Alpine Linux distribution.",
+                "/img/alpine_docker.png")
             ];
     }
 

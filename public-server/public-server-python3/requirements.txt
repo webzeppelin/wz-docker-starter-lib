@@ -7,3 +7,4 @@ redis==2.10.5
 iso8601==0.1.11
 PyJWT==1.4.2
 cryptography==1.5.3
+requests==2.11.1

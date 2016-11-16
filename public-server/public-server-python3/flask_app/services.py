@@ -152,7 +152,10 @@ def login_token():
     redis_key = get_login_redis_key(session_id)
     r = get_redis()
 
-    cached_state = r.hget(redis_key, 'state')
+    print('final state: '+state)
+
+    cached_state = r.hget(redis_key, 'state').decode('utf-8')
+    print('cached state: ' + cached_state)
     if state != cached_state:
         return error_response(400, 'Incorrect state value provided')
 
@@ -168,15 +171,15 @@ def login_token():
 def get_user_info():
     client = oidc.OIDCClient(app.oidc_config)
 
-    access_token = get_access_token(request)
+    id_token = get_id_token(request)
 
-    if not access_token:
-        return error_response(401, "Missing access token")
+    if not id_token:
+        return error_response(401, "Missing id token")
 
     try:
-        token = client.validate_token(access_token)
+        token = client.validate_token(id_token)
     except:
-        return error_response(401, "Invalid access token")
+        return error_response(401, "Invalid id token")
 
     return success_response(
         {
@@ -185,6 +188,14 @@ def get_user_info():
             'email': token.get('email')
         }
     )
+
+def get_id_token(request):
+    id_token = request.headers.get("Authorization")
+    if id_token and id_token.startswith("Bearer "):
+        id_token = id_token[7:]
+    if not id_token:
+        id_token = request.cookies.get('wzstarter.oidc.id_token')
+    return id_token
 
 def get_access_token(request):
     access_token = request.headers.get("Authorization")

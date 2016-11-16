@@ -2,20 +2,22 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import { Router } from '@angular/router';
 import { ApiService } from './api.service'
-import { LoginResponse, TokenResponse, TokenRequest } from './api.model'
+import { LoginResponse, TokenResponse, TokenRequest, UserInfo } from './api.model'
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 
 import 'rxjs/Rx'
 import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/map'
 
 import { Configuration } from '../app.config';
 
 @Injectable()
 export class OIDCService {
+    private _user: BehaviorSubject<UserInfo>;
+
     constructor(private _api: ApiService, private _configuration: Configuration, private _router: Router) {
-
-
+        this._user = new BehaviorSubject<UserInfo>(new UserInfo('Loading...','',''));
     }
 
     public isLoggedIn (): boolean {
@@ -76,7 +78,26 @@ export class OIDCService {
         Cookie.delete('wzstarter.login.session_id');
 
         // redirect to the home page
+        this.refreshUserInfo();
         this._router.navigate(["/"]); /*.then(result=>{window.location.href = '/';});*/
+    }
+
+    public getUserInfo (): Observable<UserInfo> {
+        return this._user.asObservable();
+    }
+
+    public refreshUserInfo (): void {
+        if (!this.isLoggedIn()) return;
+
+        this._api.getUserInfo()
+            .subscribe(
+                ui => this.handleRefreshUserInfoResponse(ui),
+                error => console.error('Error: ' + error)
+            );
+    }
+
+    private handleRefreshUserInfoResponse ( userInfo: UserInfo ): void {
+        this._user.next(userInfo);
     }
 
     public logout(): void {
